@@ -9,25 +9,22 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-
+#include <errno.h>    // EIO
 #include <stdint.h>
-// #include "bsp_config.h"
+#include <stdio.h>
 // #include <libopencm3/usb/audio.h>
 // #include <libopencm3/usb/midi.h>
 // #include <libopencm3/usb/usbd.h>
-
 #include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/usart.h>
 
-#include <libopencm3/stm32/rcc.h>
-
+// #include "bsp_config.h"
 #include "api-asm.h"
 #include "api.h"
 #include "bsp_config.h"
+#include "keypad.h"
 #include "usb_desc.h"
-
-#include <errno.h>    // EIO
-
 /* Private typedef -----------------------------------------------------------*/
 
 extern char usb_serial_number[25];                       /* 12 bytes of desig and a \0 */

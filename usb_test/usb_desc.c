@@ -9,17 +9,15 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-
-#include <stdint.h>
-
 #include "usb_desc.h"
+
 #include <libopencm3/usb/audio.h>
 #include <libopencm3/usb/midi.h>
+#include <stdint.h>
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
-#define NULL (void*)(0)
 
 /* Private variables ---------------------------------------------------------*/
 
