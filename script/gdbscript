@@ -1,0 +1,338 @@
+# -*- GDB-Script -*-
+# "file" should place before "target"
+# file build/sample.elf
+# file /run/shm/d/workspace/STM32F103C8_TEST_8M/SW4STM32/STM32F103C8_TEST_8M/Debug/STM32F103C8_TEST_8M.elf
+
+# set debug arm # only for gdb-multiarch
+
+set debug arm
+file bbq10_keyboard.elf
+target remote localhost:3333
+
+# target extended-remote /dev/ttyACM0
+# monitor swdp_scan
+# attach 1
+# load
+# set $pc = *0x20000004
+# set $sp = *0x20000000
+set $pc = *0x08000004
+set $sp = *0x08000000
+
+# gdb settings ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+alias -a di = disas
+# alias -a dis = disas
+# alias -a disa = disas
+# alias -a tb = tbreak
+# gdb settings vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+################################################################################
+
+# # gef settings ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# # with capstone and keystone setup
+# gef config context.layout "-args source threads trace extra -memory"
+# # gef config context.layout "regs stack code args source threads trace extra memory"
+# # gef config context.layout "regs stack -code -args source threads trace extra memory"
+# # gef config context.layout "regs stack -code -args source trace extra memory"
+# # gef config context.layout "stack -code -args source trace extra memory"
+# # gef config context.layout "regs source memory"
+
+# gef config context.nb_lines_code 8
+# # gef config context.redirect "/dev/pts/0"
+
+# # layout split
+# # tui disable
+
+# # gef settings vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+################################################################################
+
+# debug ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tbreak main
+# b main
+
+# trace enable bit in DEMCR register
+# TPIU module -> DEMCR& = 1 << TRCENA
+# DEMCR MON_STEP
+# DEMCR MON_EN
+
+# PM0056 Programming manual
+#     describe registers
+#     CPS, CPUID
+
+# watch CPU SCB registers
+# CPUID ICSR VTOR AIRCR SCR CCR SHPR1 SHPR2 SHPR3 CSFR
+# memory watch 0xe000ed00 10 dword
+
+
+# stack
+# memory watch 0x20004FC0 64 byte
+
+# DWT_CTRL and DWT_CYCCNT described ARM® v7-M Architecture Reference Manual
+# DWT_CTRL bit CYCCNTENA (bit 1) is set, DWT_CYCCNT works
+# DWT_CTRL bit CPIEVTENA (bit 17) is set, DWT_CPICNT works
+# DWT_CTRL DWT_CYCCNT DWT_CPICNT DWT_SLEEPCNT DWT_LSUCNT DWT_FOLDCNT
+
+# memory watch 0xE0001000 3 dword
+
+# DWT_CTRL bit 1, CYCCNTENA, Enable CYCCNT
+# set *0xE0001000=(*0xE0001000) & 0x1
+
+# DWT_CTRL bit 17, CPIEVTENA, Enables CPI count event.
+# set *0xE0001000=(*0xE0001000) & (0x20000)
+# set *0xE0001000 = 0x20001
+# reset DWT_CYCCNT value, Cycle count register
+# set *0xE0001004 = (long int)0x0
+# DWT_CPICNT, Instruction cycle count event register
+# set *0xE0001008 = (long int)0x0
+
+# memory watch 0xE0001004 4 word
+# memory watch 0xE0001004 2 dword
+
+# Debug registers
+# DFSR 0xE000ED30
+# DHCSR 0xE000EDF0
+# DCRSR 0xE000EDF4
+# DCRDR 0xE000EDF8
+# DEMCR 0xE000EDFC bit 24, TRCENA, Trace Enable
+
+# # C1.5 Debug event behavior
+# # C1.6 Debug register support in the SCS
+# # ARMv7-M Architecture Reference Manual(ARMv7-M_ARM).pdf
+# # DHCSR DCRSR DCRDR DEMCR
+# #   DHCSR: bit2 C_STEP, bit1 C_HALT
+# memory watch 0xE000EDF0 4 dword
+
+
+# clear memory aroud stack
+# set *0x20004fb0=(long int)0x0
+# set *0x20004fb4=(long int)0x0
+# set *0x20004fb8=(long int)0x0
+# set *0x20004fbc=(long int)0x0
+
+# set *0x20004fc0=(long int)0x0
+# set *0x20004fc4=(long int)0x0
+# set *0x20004fc8=(long int)0x0
+# set *0x20004fcc=(long int)0x0
+
+# set *0x20004fd0=(long int)0x0
+# set *0x20004fd4=(long int)0x0
+# set *0x20004fd8=(long int)0x0
+# set *0x20004fdc=(long int)0x0
+
+# set *0x20004fe0=(long int)0x0
+# set *0x20004fe4=(long int)0x0
+# set *0x20004fe8=(long int)0x0
+# set *0x20004fec=(long int)0x0
+
+# set *0x20004ff0=(long int)0x0
+# set *0x20004ff4=(long int)0x0
+# set *0x20004ff8=(long int)0x0
+# set *0x20004ffc=(long int)0x0
+
+# set *0xE000EDF0=
+
+# set PC counter in ETM/ TPIU
+
+# DEBUG  proj/_stm32/stm32f4discovery_crc_test/Src/main.c ^^^^^^^^^^^^^^^^^^^^^^
+
+# b SystemClock_Config
+# b SysTick_Handler
+
+# b TIM6_DAC_IRQHandler
+# command
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# print "g_led_scan_row = "
+# print g_led_scan_row
+# print "g_led_scan_row_pattern[g_led_scan_row] = "
+# print g_led_scan_row_pattern[g_led_scan_row]
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# end
+
+# if (column >= KEYBOARD_COLUMN_NUMBER)
+# b main.c:608
+# command
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# # from 0 to 0x28
+# print "column_number ="
+# print column_number
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# end
+
+
+# # b transfer_matrix
+# # b main.c: if (previous_g_switch_config != g_switch_config)
+# b main.c:557
+# command
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# print "g_key_buf_transferred"
+# print g_key_buf_transferred
+# print "g_key_buf"
+# print g_key_buf
+# # x/7wt g_key_buf
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# end
+
+# b HAL_TIM_PWM_Start
+# b HAL_GPIO_WritePin
+# b GPIO_activate
+# b GPIO_deactivate
+# b TIM6_DAC_IRQHandler_callback
+# main.c:if (HAL_OK != HAL_SPI_Transmit (&hspi2, & (union_word_byte.byte[0]), 1, 1))
+# b main.c:700
+# if (HAL_OK != HAL_SPI_Transmit (&hspi1, & (column_number.column_byte[0]), 1, 1)) // delay no more than 1ms
+# b main.c:801
+# b stm32f4xx_hal_spi.c:571
+# b stm32f4xx_hal_spi.c:532
+
+# assert_failed, while(1);
+# b main.c:1475
+# watch hspi2.Init.Direction
+
+# # b HardFault_Handler
+# b main.c:997
+# # command
+# # set debug_cnt=debug_cnt+1
+# # end
+# b main.c:1020
+# # b TIM7_IRQHandler_callback
+# b main.c:616
+# b main.c:621
+# disable 3 4
+
+
+# b *(fn_mask_init)
+# command
+# set g_switch_config=2
+# end
+
+# # b *(38+fn_mask_init)
+# b fn_mask_init
+# command
+# finish
+# # set g_switch_config=2
+# # p i
+# # p j
+# # p g_key_lut[g_switch_config][0][i][j]
+# end
+
+
+# void fn_mask_init (void)
+# tb main.c:562
+# command
+# set *0xE0001004 = (long int)0x0
+# set *0xE0001008 = (long int)0x0
+# end
+
+# b keyboard_drive_column
+
+# # key_read_column_value = keyboard_read_column();
+# # b main.c:569
+# b *(0+TIM7_IRQHandler_callback)
+# command
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# p "g_key_buf = "
+# p g_key_buf
+# p "g_key_buf_transferred = "
+# p g_key_buf_transferred
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# end
+
+# # if (g_switch_config_previous != temp_switch_config)
+# b main.c:597
+# command
+# p temp_switch_config
+# p g_switch_config_previous
+# p g_switch_config
+# end
+
+# b main.c:611
+# command
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# p "column_number = "
+# p column_number
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^"
+# end
+
+# DEBUG rt-thread vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+
+# break point 1
+# command 1
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# print $pc
+# bt
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# end
+# # break point 2
+# command 2
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# print $pc
+# btp
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# print "^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*"
+# end
+
+# b *((main) +14)
+# b *0x80003160
+
+# after command MSP
+# b *(reset+30)
+# command
+# set $sp=0x20004FFC
+# end
+
+
+# **********************************************************
+# 0x080012e0 <+64>:    bl      0x8002370
+# tb *0x8002370
+# b *(entry+64)
+# 0x080012e4 <+68>:    bl      0x8002350
+# tb *0x8002350
+# b *(entry+68)
+# # "bl	gpio_init\n\t"
+# 0x080012e8 <+72>:    bl      0x8001cf0
+# tb *0x8001cf0
+# b *(entry+72)
+
+# **********************************************************
+# "bl     gpio_init\n\t"
+# 0x0800f462
+# 0xe0042000 DBGMCU_IDCODE, in RM0008 chapter 31.6.1
+# awatch *(int*)0xE000ED04
+
+
+# B3.2.3 The System Control Block (SCB), Interrupt Control State Register (ICSR)
+# awatch *0xE000ED04 SCB_ICSR
+# awatch -l *(uint32_t *)0xe0042000
+# b *(main+48)
+# b *0x080013e4
+# c
+# command
+# disassemble 'foo.c'::bar
+# end
+# entry -> main
+# halt
+# hit breakpoint main
+# loop here
+# msr    CONTROL, r1
+# reset
+# set $pc 0x8003268
+# set $pc to reset()
+# set $sp=0x20004FFC
+# tb main
+# tbreak *(entry+88)
+# tbreak *0x8002168
+# trace-run *0x0800fc30
+# trace-run *0x080122e0
+# trace-run *0x08013110
+# trace-run *0x8013110
+# trace-run 0x0800fc84
+# trace-run 0x8005574
+# watch *(int*)0xE000ED04
+# watch -l *0xE000ED04
+
+
+# debug vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
