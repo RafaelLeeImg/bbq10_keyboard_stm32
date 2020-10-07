@@ -295,8 +295,6 @@ const uint8_t sysex_identity[] = {
 
 /* Private function prototypes -----------------------------------------------*/
 static void usbmidi_data_rx_cb (usbd_device* usbd_dev, uint8_t ep);
-// void usbmidi_set_config (usbd_device* usbd_dev, uint16_t wValue);
-static void button_send_event (usbd_device* usbd_dev, int pressed);
 
 /* Private functions ---------------------------------------------------------*/
 

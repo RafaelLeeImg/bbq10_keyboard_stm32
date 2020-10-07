@@ -32,11 +32,10 @@ extern const struct usb_device_descriptor dev_desc_0;    // usb_desc.c
 extern const struct usb_config_descriptor config_desc_0;
 extern const char* usb_strings[];
 extern uint8_t usbd_control_buffer[128];
+extern gpio_state_struct g_gpio_state_list[];
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
-// #define NULL (void*)(0)
-#define NULL (0)
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 // extern void usbmidi_set_config (usbd_device* usbd_dev, uint16_t wValue);
@@ -101,11 +100,14 @@ int main (void)
   rcc_set_usbpre (RCC_CFGR_USBPRE_PLL_CLK_DIV1_5);
 
   rcc_periph_clock_enable (RCC_GPIOA);    // usb, usart
+  rcc_periph_clock_enable (RCC_GPIOB);    // I2c, column, row, mic
   // rcc_periph_clock_enable(RCC_GPIOD); // crystal
   rcc_periph_clock_enable (RCC_AFIO);
   // // rcc_periph_clock_enable(RCC_OTGFS);
   // rcc_periph_clock_enable(RCC_USB);
   rcc_periph_clock_enable (RCC_USART1);
+
+  bsp_gpio_init (g_gpio_state_list);
 
   // // gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO9 | GPIO10 | GPIO11 | GPIO12);
 
@@ -121,12 +123,12 @@ int main (void)
   // // USB D+ pull-up to 3.3V with 1.5k resistor for high speed device
   usart_setup();
 
-  gpio_set_mode (LED0_PORT, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, LED0_PIN);
   gpio_clear (LED0_PORT, LED0_PIN);
   gpio_toggle (LED0_PORT, LED0_PIN);
 
   // printf ("Hello World! %i %f %f\r\n", counter, fcounter, dcounter);
   printf ("Hello World! %i %f %f\r\n", 3, 1.3, 2.3);
+  gpio_toggle (LED0_PORT, LED0_PIN);
 
   // for (int j = 0; j < 10; j++)
   // {
