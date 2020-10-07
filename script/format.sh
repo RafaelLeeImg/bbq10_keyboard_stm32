@@ -12,5 +12,7 @@ clang-format -i --verbose ../usb_test/usb_desc.c
 clang-format -i --verbose ../usb_test/usb_desc.h
 clang-format -i --verbose ../usb_test/keypad.c
 clang-format -i --verbose ../usb_test/keypad.h
+clang-format -i --verbose ../usb_test/interrupt.c
+clang-format -i --verbose ../usb_test/interrupt.h
 ## clang-format -i --verbose
 

@@ -23,6 +23,7 @@
 #include "api-asm.h"
 #include "api.h"
 #include "bsp_config.h"
+#include "interrupt.h"
 #include "keypad.h"
 #include "usb_desc.h"
 /* Private typedef -----------------------------------------------------------*/
@@ -106,6 +107,7 @@ int main (void)
   // // rcc_periph_clock_enable(RCC_OTGFS);
   // rcc_periph_clock_enable(RCC_USB);
   rcc_periph_clock_enable (RCC_USART1);
+  tim7_interrupt_setup();
 
   bsp_gpio_init (g_gpio_state_list);
 

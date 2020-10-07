@@ -2,7 +2,7 @@ PROJECT = bbq10_keyboard
 BUILD_DIR = bin
 
 SHARED_DIR = ../my-common-code
-CFILES = main.c usb_desc.c keypad.c
+CFILES = main.c usb_desc.c keypad.c interrupt.c
 CFILES += api.c
 AFILES += api-asm.S
 
