@@ -26,6 +26,7 @@ typedef struct
   uint8_t config;
 } gpio_state_struct;    // TODO:rename to gpio_state_conf
 
+// the sequence should be exactly the same to gpio_state_struct g_gpio_state_list[]
 typedef enum
 {
   KEY_ROW_1 = 0,
@@ -50,11 +51,19 @@ typedef enum
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+// void bsp_gpio_init (gpio_state_struct l[], ssize_t length);
 void bsp_gpio_init (gpio_state_struct l[]);
 void bsp_gpio_toggle (gpio_state_struct l[], GPIO_LIST g);
 void bsp_gpio_set (gpio_state_struct l[], GPIO_LIST g);
-void bsp_gpio_reset (gpio_state_struct l[], GPIO_LIST g);
+void bsp_gpio_clear (gpio_state_struct l[], GPIO_LIST g);
+uint16_t bsp_gpio_port_read (gpio_state_struct l[], GPIO_LIST g);
+bool bsp_gpio_pin_read (gpio_state_struct l[], GPIO_LIST g);
+
 // void bsp_gpio_toggle (GPIO_LIST g);
+
+bool read_key (gpio_state_struct l[], GPIO_LIST columns[], int column_size, GPIO_LIST rows[], int row_size, int index);
+bool keys_drive_row (gpio_state_struct l[], GPIO_LIST rows[], int row_size, int row_index);
+
 #endif /* __KEYPAD_H__ */
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/

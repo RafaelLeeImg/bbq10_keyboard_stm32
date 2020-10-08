@@ -21,6 +21,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+unsigned int g_tim_state;
 extern gpio_state_struct g_gpio_state_list[];
 /* Private function prototypes -----------------------------------------------*/
 
@@ -73,10 +74,39 @@ void tim2_interrupt_setup (void)
 
 void tim2_isr (void)
 {
+  TIM_SR (TIM2) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
+
   // bsp_gpio_toggle (LED0_PORT, LED0_PIN);
   bsp_gpio_toggle (g_gpio_state_list, LED0);
-  printf ("TIM2 irq\n");
-  TIM_SR (TIM2) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
+  // printf ("TIM2 irq\n");
+
+  // TODO: make the global and static
+  GPIO_LIST rows[]    = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
+  int row_size        = sizeof (rows) / sizeof (GPIO_LIST);
+  GPIO_LIST columns[] = {KEY_COL_1, KEY_COL_2, KEY_COL_3, KEY_COL_4, KEY_COL_5};
+  int column_size     = sizeof (columns) / sizeof (GPIO_LIST);
+
+  // bool keys_drive_row (gpio_state_struct l[], int rows[], int row_size, int row_index)
+  if (g_tim_state % 2 == 0)
+  {
+    keys_drive_row (g_gpio_state_list, rows, row_size, g_tim_state >> 1);
+  }
+  else
+  {
+    uint32_t row_value = 0;
+    for (int i = 0; i < column_size; i++)
+    {
+      row_value = row_value << 1;
+      row_value &= bsp_gpio_pin_read (g_gpio_state_list, columns[i]) ? 1 : 0;
+    }
+    printf ("row value = 0x%X\n", row_value);
+  }
+
+  g_tim_state++;
+  if (g_tim_state > (2 * (unsigned int)row_size + 3))
+  {
+    g_tim_state = 0;
+  }
 }
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/
