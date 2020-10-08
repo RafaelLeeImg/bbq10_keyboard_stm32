@@ -17,8 +17,12 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void tim7_interrupt_setup (void);
-void tim2_isr (void);
+void tim4_interrupt_setup (void);
+// void tim4_isr (void);
+
+void tim2_interrupt_setup (void);
+// void tim2_isr (void);
+
 #endif /* __INTERRUPT_H__ */
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/

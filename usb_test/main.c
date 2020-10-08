@@ -107,7 +107,7 @@ int main (void)
   // // rcc_periph_clock_enable(RCC_OTGFS);
   // rcc_periph_clock_enable(RCC_USB);
   rcc_periph_clock_enable (RCC_USART1);
-  tim7_interrupt_setup();
+  tim2_interrupt_setup();
 
   bsp_gpio_init (g_gpio_state_list);
 
@@ -153,7 +153,7 @@ int main (void)
   gpio_set_mode (GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO12);
   gpio_clear (GPIOA, GPIO12);
   // for (unsigned i = 0; i < 800000; i++)
-  for (unsigned i = 0; i < 3200000; i++)
+  for (unsigned i = 0; i < 800000; i++)
   {
     __asm__("nop");
   }
