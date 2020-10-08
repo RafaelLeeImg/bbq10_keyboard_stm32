@@ -18,20 +18,21 @@
 // TODO:rename to gpio_table
 gpio_state_struct g_gpio_state_list[] = {
   // gpioport gpios reset_state mode config
-  {GPIOB, GPIO12, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},    // KEY_ROW_1
-  {GPIOB, GPIO10, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},    // KEY_ROW_2
-  {GPIOB, GPIO9, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_ROW_3
-  {GPIOA, GPIO1, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_ROW_4
-  {GPIOA, GPIO3, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_ROW_5
-  {GPIOA, GPIO4, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_ROW_6
-  {GPIOA, GPIO5, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_ROW_7
+  {GPIOB, GPIO12, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},    // KEY_ROW_1
+  {GPIOB, GPIO10, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},    // KEY_ROW_2
+  {GPIOB, GPIO9, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_ROW_3
+  {GPIOA, GPIO1, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_ROW_4
+  {GPIOA, GPIO3, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_ROW_5
+  {GPIOA, GPIO4, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_ROW_6
+  {GPIOA, GPIO5, 0, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_ROW_7
 
   // , 1 for GPIOx_ODR pull-up, Table 20. Port bit configuration table
-  {GPIOA, GPIO8, 1, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_COL_1
-  {GPIOB, GPIO11, 1, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},    // KEY_COL_2
-  {GPIOA, GPIO15, 1, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},    // KEY_COL_3
-  {GPIOB, GPIO8, 1, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_COL_4
-  {GPIOA, GPIO0, 1, GPIO_MODE_INPUT, GPIO_CNF_INPUT_PULL_UPDOWN},     // KEY_COL_5
+  {GPIOA, GPIO8, 1, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_COL_1
+  {GPIOB, GPIO11, 1, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},    // KEY_COL_2
+  // TODO, avoid PA15 in next version, since PA15 is JTDI
+  {GPIOA, GPIO15, 1, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},    // KEY_COL_3
+  {GPIOB, GPIO8, 1, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_COL_4
+  {GPIOA, GPIO0, 1, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},     // KEY_COL_5
 
   {GPIOA, GPIO2, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},    // LED0
   {GPIOA, GPIO6, 0, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL},    // BACK_LIGHT0
@@ -41,18 +42,6 @@ gpio_state_struct g_gpio_state_list[] = {
 /* Private function prototypes -----------------------------------------------*/
 int my_test (int a, int b);
 /* Private functions ---------------------------------------------------------*/
-
-/* ---------------------------------------------------------------------------*/
-/**
- * @brief
- * @param  None
- * @retval None
- */
-/* ---------------------------------------------------------------------------*/
-int my_test (int a, int b)
-{
-  return a + b;
-}
 
 /**
  * \par Function
@@ -180,18 +169,18 @@ bool bsp_gpio_pin_read (gpio_state_struct l[], GPIO_LIST g)
   }
 }
 
-bool keys_drive_row (gpio_state_struct l[], GPIO_LIST rows[], int row_size, int row_index)
+void keys_drive_line (gpio_state_struct l[], GPIO_LIST gpios[], int size_of_gpios, int index)
 {
-  int row = rows[row_index];
-  for (int i = 0; i < row_size; i++)
+  // int gpio = gpios[index];
+  for (int i = 0; i < size_of_gpios; i++)
   {
-    if (row_index == i)
+    if (index == i)
     {
-      bsp_gpio_clear (l, rows[i]);    // ???????????
+      bsp_gpio_clear (l, gpios[i]);    // ???????????
     }
     else
     {
-      bsp_gpio_set (l, rows[i]);    // ???????????
+      bsp_gpio_set (l, gpios[i]);    // ???????????
     }
   }
 }

@@ -62,7 +62,7 @@ bool bsp_gpio_pin_read (gpio_state_struct l[], GPIO_LIST g);
 // void bsp_gpio_toggle (GPIO_LIST g);
 
 bool read_key (gpio_state_struct l[], GPIO_LIST columns[], int column_size, GPIO_LIST rows[], int row_size, int index);
-bool keys_drive_row (gpio_state_struct l[], GPIO_LIST rows[], int row_size, int row_index);
+void keys_drive_line (gpio_state_struct l[], GPIO_LIST gpios[], int size_of_gpios, int index);
 
 #endif /* __KEYPAD_H__ */
 

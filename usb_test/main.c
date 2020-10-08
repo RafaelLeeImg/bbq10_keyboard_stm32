@@ -48,9 +48,17 @@ static void usart_setup (void);
 // TX only
 static void usart_setup (void)
 {
+
+  // /* Setup GPIO pin GPIO_USART1_RE_TX on GPIO port B for transmit. */
+  // gpio_set_mode (GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_TX);
+
+  // /* Setup GPIO pin GPIO_USART1_RE_RX on GPIO port B for receive. */
+  // gpio_set_mode (GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
+
   /* Setup GPIO pin GPIO_USART1_RE_TX on GPIO port B for transmit. */
-  gpio_set_mode (GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_TX);
-  // gpio_set_mode (GPIOA, GPIO_MODE_OUTPUT_50_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO_USART1_TX);
+  gpio_set_mode (GPIOA, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_ALTFN_PUSHPULL, GPIO_USART1_TX);
+  gpio_set_mode (GPIOA, GPIO_MODE_INPUT, GPIO_CNF_INPUT_FLOAT, GPIO_USART1_RX);
+  gpio_set (GPIOA, GPIO_USART1_RX);
 
   /* Setup UART parameters. */
   usart_set_baudrate (USART1, 115200);
@@ -58,7 +66,8 @@ static void usart_setup (void)
   usart_set_stopbits (USART1, USART_STOPBITS_1);
   usart_set_parity (USART1, USART_PARITY_NONE);
   usart_set_flow_control (USART1, USART_FLOWCONTROL_NONE);
-  usart_set_mode (USART1, USART_MODE_TX);
+  usart_set_mode (USART1, USART_MODE_TX_RX);
+  // usart_set_mode (USART1, USART_MODE_TX);
 
   /* Finally enable the USART. */
   usart_enable (USART1);
@@ -109,7 +118,19 @@ int main (void)
   rcc_periph_clock_enable (RCC_USART1);
   tim2_interrupt_setup();
 
+  // to set PA15 free from debug port
+  // avoid PA15 in next version
+  AFIO_MAPR |= AFIO_MAPR_SWJ_CFG_JTAG_OFF_SW_ON;
+
   bsp_gpio_init (g_gpio_state_list);
+
+  // set all row GPIOs to pull-up
+  GPIO_LIST rows[] = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
+  int row_size     = sizeof (rows) / sizeof (GPIO_LIST);
+  for (int i = 0; i < row_size; i++)
+  {
+    bsp_gpio_set (g_gpio_state_list, rows[i]);
+  }
 
   // // gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO9 | GPIO10 | GPIO11 | GPIO12);
 

@@ -59,11 +59,11 @@ void tim2_interrupt_setup (void)
   /* Set timer start value. */
   TIM_CNT (TIM2) = 1;
 
-  /* Set timer prescaler. 72MHz/1440 => 50000 counts per second. */
-  TIM_PSC (TIM2) = 1440;
+  /* Set timer prescaler. 72MHz/7200 => 10,000 counts per second. */
+  TIM_PSC (TIM2) = 7200;
 
   /* End timer value. If this is reached an interrupt is generated. */
-  TIM_ARR (TIM2) = 50000;
+  TIM_ARR (TIM2) = 1000;
 
   /* Update interrupt enable. */
   TIM_DIER (TIM2) |= TIM_DIER_UIE;
@@ -86,25 +86,25 @@ void tim2_isr (void)
   GPIO_LIST columns[] = {KEY_COL_1, KEY_COL_2, KEY_COL_3, KEY_COL_4, KEY_COL_5};
   int column_size     = sizeof (columns) / sizeof (GPIO_LIST);
 
-  // bool keys_drive_row (gpio_state_struct l[], int rows[], int row_size, int row_index)
-  if (g_tim_state % 2 == 0 && ((g_tim_state / 2) < row_size))
+  // bool keys_drive_line (gpio_state_struct l[], int rows[], int row_size, int row_index)
+  if (g_tim_state % 2 == 0 && ((g_tim_state / 2) < column_size))
   {
-    keys_drive_row (g_gpio_state_list, rows, row_size, g_tim_state >> 1);
+    keys_drive_line (g_gpio_state_list, columns, column_size, g_tim_state >> 1);
   }
-  else if ((g_tim_state / 2) < row_size)
+  else if ((g_tim_state / 2) < column_size)
   {
-    uint32_t row_value = 0;
-    for (int i = 0; i < column_size; i++)
+    uint32_t column_value = 0;
+    for (int i = 0; i < row_size; i++)
     {
-      row_value          = row_value << 1;
-      unsigned int delta = bsp_gpio_pin_read (g_gpio_state_list, columns[i]) ? 0 : 1;
-      row_value |= delta;
+      column_value       = column_value << 1;
+      unsigned int delta = bsp_gpio_pin_read (g_gpio_state_list, rows[i]) ? 0 : 1;
+      column_value |= delta;
     }
-    printf ("row = %d, row value = 0x%X\n", (g_tim_state / 2), row_value);
+    printf ("column = %d, column value = 0x%X\n", (g_tim_state / 2), column_value);
   }
 
   g_tim_state++;
-  if (g_tim_state > (2 * (unsigned int)row_size + 3))
+  if (g_tim_state > (2 * (unsigned int)column_size + 1))
   {
     g_tim_state = 0;
   }
