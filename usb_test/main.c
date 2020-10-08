@@ -184,12 +184,12 @@ void button_poll (usbd_device* usbd_dev)
    * noise suppression. It is also very wide (32-bits) because it can
    * be polled in a very tight loop (no debounce timer).
    */
-  uint32_t old_button_state = button_state;
-  button_state              = (button_state << 1) | (GPIOA_IDR & 1);
-  if ((0 == button_state) != (0 == old_button_state))
-  {
-    button_send_event (usbd_dev, !!button_state);
-  }
+  // uint32_t old_button_state = button_state;
+  // button_state              = (button_state << 1) | (GPIOA_IDR & 1);
+  // if ((0 == button_state) != (0 == old_button_state))
+  // {
+  //   button_send_event (usbd_dev, !!button_state);
+  // }
 }
 
 static void button_send_event (usbd_device* usbd_dev, int pressed)

@@ -87,19 +87,20 @@ void tim2_isr (void)
   int column_size     = sizeof (columns) / sizeof (GPIO_LIST);
 
   // bool keys_drive_row (gpio_state_struct l[], int rows[], int row_size, int row_index)
-  if (g_tim_state % 2 == 0)
+  if (g_tim_state % 2 == 0 && ((g_tim_state / 2) < row_size))
   {
     keys_drive_row (g_gpio_state_list, rows, row_size, g_tim_state >> 1);
   }
-  else
+  else if ((g_tim_state / 2) < row_size)
   {
     uint32_t row_value = 0;
     for (int i = 0; i < column_size; i++)
     {
-      row_value = row_value << 1;
-      row_value &= bsp_gpio_pin_read (g_gpio_state_list, columns[i]) ? 1 : 0;
+      row_value          = row_value << 1;
+      unsigned int delta = bsp_gpio_pin_read (g_gpio_state_list, columns[i]) ? 0 : 1;
+      row_value |= delta;
     }
-    printf ("row value = 0x%X\n", row_value);
+    printf ("row = %d, row value = 0x%X\n", (g_tim_state / 2), row_value);
   }
 
   g_tim_state++;

@@ -107,6 +107,22 @@ void bsp_gpio_toggle (gpio_state_struct l[], GPIO_LIST g)
  */
 void bsp_gpio_set (gpio_state_struct l[], GPIO_LIST g)
 {
+  // switch ((l[g]).gpioport)
+  // {
+  // case GPIOA:
+  //   printf ("GPIOA, ");
+  //   break;
+  // case GPIOB:
+  //   printf ("GPIOB, ");
+  //   break;
+  // case GPIOC:
+  //   printf ("GPIOC, ");
+  //   break;
+  // case GPIOD:
+  //   printf ("GPIOD, ");
+  //   break;
+  // }
+  // printf ("port = 0x%X, bsp_gpio_set()\n", (l[g]).gpios);
   gpio_set ((l[g]).gpioport, (l[g]).gpios);
 }
 
@@ -124,6 +140,22 @@ void bsp_gpio_set (gpio_state_struct l[], GPIO_LIST g)
  */
 void bsp_gpio_clear (gpio_state_struct l[], GPIO_LIST g)
 {
+  // switch ((l[g]).gpioport)
+  // {
+  // case GPIOA:
+  //   printf ("GPIOA, ");
+  //   break;
+  // case GPIOB:
+  //   printf ("GPIOB, ");
+  //   break;
+  // case GPIOC:
+  //   printf ("GPIOC, ");
+  //   break;
+  // case GPIOD:
+  //   printf ("GPIOD, ");
+  //   break;
+  // }
+  // printf ("port = 0x%X, bsp_gpio_reset()\n", (l[g]).gpios);
   gpio_clear ((l[g]).gpioport, (l[g]).gpios);
 }
 
@@ -135,12 +167,15 @@ uint16_t bsp_gpio_port_read (gpio_state_struct l[], GPIO_LIST g)
 bool bsp_gpio_pin_read (gpio_state_struct l[], GPIO_LIST g)
 {
   uint16_t ret = bsp_gpio_port_read (l, g);
-  if (ret & (1 << (l[g]).gpios))
+  uint16_t bit = (l[g]).gpios;
+  if (0 != (ret & bit))
   {
+    // printf ("0x%x & 0x%x != 0, bsp_gpio_pin_read, true\n", ret, bit);
     return true;
   }
   else
   {
+    // printf ("0x%x & 0x%x == 0, bsp_gpio_pin_read, false\n", ret, bit);
     return false;
   }
 }
