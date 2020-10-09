@@ -12,9 +12,7 @@
 #include <errno.h>    // EIO
 #include <stdint.h>
 #include <stdio.h>
-// #include <libopencm3/usb/audio.h>
-// #include <libopencm3/usb/midi.h>
-// #include <libopencm3/usb/usbd.h>
+
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/usart.h>
@@ -28,17 +26,21 @@
 #include "usb_desc.h"
 /* Private typedef -----------------------------------------------------------*/
 
-extern char usb_serial_number[25];                       /* 12 bytes of desig and a \0 */
-extern const struct usb_device_descriptor dev_desc_0;    // usb_desc.c
-extern const struct usb_config_descriptor config_desc_0;
+extern char usb_serial_number[25];                      /* 12 bytes of desig and a \0 */
+extern const struct usb_device_descriptor dev_descr;    // usb_desc.c
+// extern const struct usb_config_descriptor config_desc_0;
+extern const struct usb_config_descriptor config;
 extern const char* usb_strings[];
 extern uint8_t usbd_control_buffer[128];
 extern gpio_state_struct g_gpio_state_list[];
+extern void hid_set_config (usbd_device* dev, uint16_t wValue);
+extern usbd_device* usbd_dev;
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
+void sys_tick_handler (void);
 // extern void usbmidi_set_config (usbd_device* usbd_dev, uint16_t wValue);
 extern void button_poll (usbd_device* usbd_dev);
 static void button_send_event (usbd_device* usbd_dev, int pressed);
@@ -102,7 +104,7 @@ int _write (int file, char* ptr, int len)
  */
 int main (void)
 {
-  usbd_device* usbd_dev;
+  // usbd_device* usbd_dev;
 
   // rcc_clock_setup_in_hse_8mhz_out_72mhz();
   rcc_clock_setup_in_hse_16mhz_out_72mhz();
@@ -179,15 +181,14 @@ int main (void)
     __asm__("nop");
   }
 
-  usbd_dev = usbd_init (&st_usbfs_v1_usb_driver, &dev_desc_0, &config_desc_0, usb_strings, 3, usbd_control_buffer,
+  usbd_dev = usbd_init (&st_usbfs_v1_usb_driver, &dev_descr, &config, usb_strings, 3, usbd_control_buffer,
                         sizeof (usbd_control_buffer));
-
-  usbd_register_set_config_callback (usbd_dev, usbmidi_set_config);
+  usbd_register_set_config_callback (usbd_dev, hid_set_config);
 
   while (1)
   {
     usbd_poll (usbd_dev);
-    button_poll (usbd_dev);
+    // button_poll (usbd_dev);
   }
 
   /* add your own code */
@@ -196,7 +197,7 @@ int main (void)
   return my_func (rev);
 }
 
-void button_poll (usbd_device* usbd_dev)
+void button_poll (usbd_device* dev)
 {
   static uint32_t button_state = 0;
 
@@ -209,11 +210,11 @@ void button_poll (usbd_device* usbd_dev)
   // button_state              = (button_state << 1) | (GPIOA_IDR & 1);
   // if ((0 == button_state) != (0 == old_button_state))
   // {
-  //   button_send_event (usbd_dev, !!button_state);
+  //   button_send_event (dev, !!button_state);
   // }
 }
 
-static void button_send_event (usbd_device* usbd_dev, int pressed)
+static void button_send_event (usbd_device* dev, int pressed)
 {
   char buf[4] = {
     0x08, /* USB framing: virtual cable 0, note on */
@@ -225,8 +226,24 @@ static void button_send_event (usbd_device* usbd_dev, int pressed)
   buf[0] |= pressed;
   buf[1] |= pressed << 4;
 
-  while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf)) == 0)
+  while (usbd_ep_write_packet (dev, 0x81, buf, sizeof (buf)) == 0)
     ;
+}
+
+void sys_tick_handler (void)
+{
+  static int x   = 0;
+  static int dir = 1;
+  uint8_t buf[4] = {0, 0, 0, 0};
+
+  buf[1] = dir;
+  x += dir;
+  if (x > 30)
+    dir = -dir;
+  if (x < -30)
+    dir = -dir;
+
+  usbd_ep_write_packet (usbd_dev, 0x81, buf, 4);
 }
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/

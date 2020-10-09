@@ -81,10 +81,10 @@ void tim2_isr (void)
   // printf ("TIM2 irq\n");
 
   // TODO: make the global and static
-  GPIO_LIST rows[]    = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
-  int row_size        = sizeof (rows) / sizeof (GPIO_LIST);
-  GPIO_LIST columns[] = {KEY_COL_1, KEY_COL_2, KEY_COL_3, KEY_COL_4, KEY_COL_5};
-  int column_size     = sizeof (columns) / sizeof (GPIO_LIST);
+  GPIO_LIST rows[]         = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
+  int row_size             = sizeof (rows) / sizeof (GPIO_LIST);
+  GPIO_LIST columns[]      = {KEY_COL_1, KEY_COL_2, KEY_COL_3, KEY_COL_4, KEY_COL_5};
+  unsigned int column_size = sizeof (columns) / sizeof (GPIO_LIST);
 
   // bool keys_drive_line (gpio_state_struct l[], int rows[], int row_size, int row_index)
   if (g_tim_state % 2 == 0 && ((g_tim_state / 2) < column_size))
@@ -100,7 +100,7 @@ void tim2_isr (void)
       unsigned int delta = bsp_gpio_pin_read (g_gpio_state_list, rows[i]) ? 0 : 1;
       column_value |= delta;
     }
-    printf ("column = %d, column value = 0x%X\n", (g_tim_state / 2), column_value);
+    printf ("column = %d, column value = 0x%lX\n", (g_tim_state / 2), column_value);
   }
 
   g_tim_state++;
