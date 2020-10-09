@@ -15,6 +15,7 @@
 // #include <libopencm3/usb/midi.h>
 #include <libopencm3/cm3/systick.h>
 #include <libopencm3/usb/hid.h>
+#include <libopencm3/usb/usbstd.h>
 
 #include <stdint.h>
 
@@ -48,6 +49,19 @@ const struct usb_device_descriptor dev_descr = {
   .iProduct           = 2, /* index to string desc */
   .iSerialNumber      = 3, /* index to string desc */
   .bNumConfigurations = 1,
+};
+
+const struct usb_device_qualifier_descriptor dev_qualifier_desc = {
+  // struct usb_device_qualifier_descriptor
+  .bLength            = 0x0A,                    /* 0x0A */
+  .bDescriptorType    = USB_DT_DEVICE_QUALIFIER, /* 6 */
+  .bcdUSB             = 0x0200,                  /* a */
+  .bDeviceClass       = 0,                       /* b */
+  .bDeviceSubClass    = 0,                       /* c */
+  .bDeviceProtocol    = 0,                       /* d */
+  .bMaxPacketSize0    = 64,                      /* e */
+  .bNumConfigurations = 1,                       /* f */
+  .bReserved          = 0,                       /* reserved */
 };
 
 static const uint8_t hid_report_descriptor[] = {
