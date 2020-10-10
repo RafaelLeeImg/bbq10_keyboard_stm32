@@ -225,9 +225,10 @@ void hid_set_config (usbd_device* dev, uint16_t wValue)
                                   USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT, dfu_control_request);
 #endif
 
-  systick_set_clocksource (STK_CSR_CLKSOURCE_AHB_DIV8);
   /* SysTick interrupt every N clock pulses: set reload to N-1 */
-  systick_set_reload (99999);
+  // choose clk source STK_CSR_CLKSOURCE_AHB or STK_CSR_CLKSOURCE_AHB_DIV8 automatically
+  // uint32_t freq, uint32_t frequency_of_AHB
+  systick_set_frequency (1000, 72000000);
   systick_interrupt_enable();
   systick_counter_enable();
 }

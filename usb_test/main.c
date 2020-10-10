@@ -232,18 +232,33 @@ static void button_send_event (usbd_device* dev, int pressed)
 
 void sys_tick_handler (void)
 {
-  static int x   = 0;
-  static int dir = 1;
-  uint8_t buf[4] = {0, 0, 0, 0};
+  static unsigned int x = 0;
+  static int dir        = 1;
+  uint8_t buf[8]        = {0, 0, 0, 0, 0, 0, 0, 0};
 
-  buf[1] = dir;
-  x += dir;
-  if (x > 30)
-    dir = -dir;
-  if (x < -30)
-    dir = -dir;
-
-  usbd_ep_write_packet (usbd_dev, 0x81, buf, 4);
+  buf[2] = 0;
+  x++;
+  if (x == 400)
+  {
+    buf[2] = 0x11;    // key n
+    while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf) / sizeof (uint8_t)) == 0)
+    {
+      ;
+    }
+  }
+  else if (x >= 500)
+  {
+    bsp_gpio_toggle (g_gpio_state_list, LED0);
+    buf[2] = 0;
+    while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf) / sizeof (uint8_t)) == 0)
+    {
+      ;
+    }
+    x = 0;
+  }
+  else
+  {
+  }    // do nothing
 }
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/
