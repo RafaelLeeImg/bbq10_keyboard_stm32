@@ -13,6 +13,7 @@
 #define __KEYPAD_H__
 
 /* Includes ------------------------------------------------------------------*/
+#include "keys.h"
 #include <libopencm3/stm32/gpio.h>
 #include <stdint.h>
 
