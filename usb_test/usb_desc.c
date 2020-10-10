@@ -125,9 +125,12 @@ const struct usb_interface_descriptor hid_iface = {
   .bAlternateSetting  = 0,
   .bNumEndpoints      = 1,
   .bInterfaceClass    = USB_CLASS_HID,
-  .bInterfaceSubClass = 1, /* boot */
-  .bInterfaceProtocol = 2, /* mouse */
+  .bInterfaceSubClass = 1,
+  .bInterfaceProtocol = 6, /* Keyboard */
   .iInterface         = 0,
+  // .bInterfaceProtocol error does not lead to malfunction
+  // HID Usage Tables FOR USB v1.2
+  // Table 4.1: Generic Desktop Page
 
   .endpoint = &hid_endpoint,
 
