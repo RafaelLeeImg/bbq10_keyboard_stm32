@@ -47,6 +47,18 @@ typedef enum
   EMPTY,
 } GPIO_LIST;    // TODO: rename
 
+static GPIO_LIST rows[]    = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
+static GPIO_LIST columns[] = {KEY_COL_1, KEY_COL_2, KEY_COL_3, KEY_COL_4, KEY_COL_5};
+// ROW_SIZE
+#define ROW_SIZE        7
+#define COLUMN_SIZE     5
+#define HID_REPORT_SIZE (8)
+
+// #define row_size             (sizeof(rows)/sizeof(GPIO_LIST))
+// #define column_size (sizeof (columns) / sizeof (GPIO_LIST))
+// #define row_size             (7)
+// #define column_size    (5)
+
 /* Exported constants --------------------------------------------------------*/
 // gpio_state_struct g_gpio_state_list[];
 

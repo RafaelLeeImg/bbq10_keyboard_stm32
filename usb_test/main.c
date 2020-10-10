@@ -127,8 +127,8 @@ int main (void)
   bsp_gpio_init (g_gpio_state_list);
 
   // set all row GPIOs to pull-up
-  GPIO_LIST rows[] = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
-  int row_size     = sizeof (rows) / sizeof (GPIO_LIST);
+  // GPIO_LIST rows[] = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
+  int row_size = sizeof (rows) / sizeof (GPIO_LIST);
   for (int i = 0; i < row_size; i++)
   {
     bsp_gpio_set (g_gpio_state_list, rows[i]);
