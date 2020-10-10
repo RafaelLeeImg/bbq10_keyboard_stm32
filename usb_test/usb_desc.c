@@ -41,7 +41,7 @@ const struct usb_device_descriptor dev_descr = {
   .bDeviceSubClass    = 0,
   .bDeviceProtocol    = 0,
   .bMaxPacketSize0    = 64,
-  .idVendor           = 0x0483,
+  .idVendor           = 0x0483,    // STMicroelectronics
   .idProduct          = 0xffff,
   .bcdDevice          = 0x0200,
   .iManufacturer      = 1, /* index to string desc */
@@ -109,6 +109,7 @@ static const struct
   }
 };
 
+// endpoint descriptor
 const struct usb_endpoint_descriptor hid_endpoint = {
   .bLength          = USB_DT_ENDPOINT_SIZE,
   .bDescriptorType  = USB_DT_ENDPOINT,
@@ -118,6 +119,7 @@ const struct usb_endpoint_descriptor hid_endpoint = {
   .bInterval        = 0x20,
 };
 
+// interface descriptor
 const struct usb_interface_descriptor hid_iface = {
   .bLength            = USB_DT_INTERFACE_SIZE,
   .bDescriptorType    = USB_DT_INTERFACE,
@@ -138,12 +140,14 @@ const struct usb_interface_descriptor hid_iface = {
   .extralen = sizeof (hid_function),
 };
 
+// array of interface descriptors
 const struct usb_interface ifaces[] = {{
   .num_altsetting = 1,
   .altsetting     = &hid_iface,
 
 }};
 
+// configuration descriptor
 const struct usb_config_descriptor config = {
   .bLength             = USB_DT_CONFIGURATION_SIZE,
   .bDescriptorType     = USB_DT_CONFIGURATION,
@@ -214,6 +218,7 @@ static enum usbd_request_return_codes dfu_control_request (usbd_device* dev, str
 }
 #endif
 
+// run after USB attached
 void hid_set_config (usbd_device* dev, uint16_t wValue)
 {
   (void)wValue;

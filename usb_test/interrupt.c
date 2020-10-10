@@ -13,7 +13,6 @@
 #include "keypad.h"
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/f1/rcc.h>    // RCC_TIM7
-#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/timer.h>
 #include <stdio.h>
 
@@ -75,10 +74,6 @@ void tim2_interrupt_setup (void)
 void tim2_isr (void)
 {
   TIM_SR (TIM2) &= ~TIM_SR_UIF; /* Clear interrrupt flag. */
-
-  // bsp_gpio_toggle (LED0_PORT, LED0_PIN);
-  bsp_gpio_toggle (g_gpio_state_list, LED0);
-  // printf ("TIM2 irq\n");
 
   // TODO: make the global and static
   GPIO_LIST rows[]         = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
