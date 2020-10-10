@@ -114,7 +114,7 @@ const struct usb_endpoint_descriptor hid_endpoint = {
   .bDescriptorType  = USB_DT_ENDPOINT,
   .bEndpointAddress = 0x81,
   .bmAttributes     = USB_ENDPOINT_ATTR_INTERRUPT,
-  .wMaxPacketSize   = 4,
+  .wMaxPacketSize   = 8,
   .bInterval        = 0x20,
 };
 
@@ -216,7 +216,7 @@ void hid_set_config (usbd_device* dev, uint16_t wValue)
   (void)wValue;
   (void)dev;
 
-  usbd_ep_setup (dev, 0x81, USB_ENDPOINT_ATTR_INTERRUPT, 4, NULL);
+  usbd_ep_setup (dev, hid_endpoint.bEndpointAddress, hid_endpoint.bmAttributes, hid_endpoint.wMaxPacketSize, NULL);
 
   usbd_register_control_callback (dev, USB_REQ_TYPE_STANDARD | USB_REQ_TYPE_INTERFACE,
                                   USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT, hid_control_request);
