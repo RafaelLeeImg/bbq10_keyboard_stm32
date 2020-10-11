@@ -106,7 +106,7 @@ void tim2_isr_callback (void)
       column_value |= delta;
     }
     g_key_buf[column_index] = column_value;
-    printf ("column = %d, column value = 0x%lX\n", column_index, column_value);
+    printf ("column[%d] = 0x%lX\n", column_index, column_value);
   }
   else if (g_tim_state == 2 * COLUMN_SIZE)
   {

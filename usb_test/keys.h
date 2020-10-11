@@ -66,8 +66,8 @@
 // --------------------
 #define K_MUTE (0xE2)
 // capture from USB keyboard whole report is 3 bytes 0x02 0xE2 0x00
-#define K_VOL_UP        (0xE9)    // capture from USB keyboard
-#define K_VOL_DOWN      (0xEA)    // capture from USB keyboard
+// #define K_VOL_UP        (0xE9)    // capture from USB keyboard
+// #define K_VOL_DOWN      (0xEA)    // capture from USB keyboard
 #define K_PLAY_PREVIOUS (0xB6)
 #define K_PLAY_PLAY     (0xCD)
 #define K_PLAY_NEXT     (0xB5)
@@ -142,14 +142,14 @@
 #define K_FN_LEFT  (0x201)
 #define K_FN_RIGHT (0x202)
 // --------------------
-#define K_CTRL_LEFT   (0x1E0)
-#define K_SHIFT_LEFT  (0x1E1)
-#define K_ALT_LEFT    (0x1E2)
-#define K_SUPER_LEFT  (0x1E3)
-#define K_CTRL_RIGHT  (0X1E4)
-#define K_SHIFT_RIGHT (0X1E5)
-#define K_ALT_RIGHT   (0x1E6)
-#define K_SUPER_RIGHT (0x1E7)
+#define K_CTRL_LEFT   (0xE0)
+#define K_SHIFT_LEFT  (0xE1)
+#define K_ALT_LEFT    (0xE2)
+#define K_SUPER_LEFT  (0xE3)
+#define K_CTRL_RIGHT  (0XE4)
+#define K_SHIFT_RIGHT (0XE5)
+#define K_ALT_RIGHT   (0xE6)
+#define K_SUPER_RIGHT (0xE7)
 
 #endif /* __KEYS_H__ */
 

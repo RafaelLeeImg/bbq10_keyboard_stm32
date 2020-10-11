@@ -50,20 +50,28 @@ uint16_t g_key_lut[1][2][KEYBOARD_COLUMN_NUMBER][KEYBOARD_ROW_NUMBER] = {
   // config 0 ******************** QWERT 0  ********************
   {{
      // SYN and $ are wrong
-     {K_BACK_QUOTE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
+     {(K_SHIFT_LEFT << 8) | K_BACK_QUOTE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
      {K_SHIFT_LEFT, K_Z, K_X, K_P, K_D, K_S, K_E},
      {K_F, K_C, K_V, K_SHIFT_RIGHT, K_T, K_G, K_R},
      {K_J, K_N, K_B, K_ENTER, K_Y, K_H, K_U},
-     {K_K, K_M, K_BACK_QUOTE, K_BACKSPACE, K_I, K_L, K_O},
+     {K_K, K_M, (K_SHIFT_LEFT << 8) | K_4, K_BACKSPACE, K_I, K_L, K_O},
    },
 
    // Config 2 QWERT normal *************************************************
    {
-     {K_BACK_QUOTE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
-     {K_SHIFT_LEFT, K_Z, K_X, K_P, K_D, K_S, K_E},
-     {K_F, K_C, K_V, K_SHIFT_RIGHT, K_T, K_G, K_R},
-     {K_J, K_N, K_B, K_ENTER, K_Y, K_H, K_U},
-     {K_K, K_M, K_BACK_QUOTE, K_BACKSPACE, K_I, K_L, K_O},
+     // 0,K_TAB, K_ALT_LEFT,*, K_FN_RIGHT,1,#
+     // K_SHIFT_LEFT,7,8,@,5,4,2
+     // 6,9,?, K_SHIFT_RIGHT,(,/,3
+     // ;,K_COMMA,!,|,),:,_
+     // \,.,`, K_BACKSPACE,-,",+
+
+     {K_0, K_TAB, K_ALT_LEFT, (K_SHIFT_LEFT << 8) | K_8, K_FN_RIGHT, K_1, (K_SHIFT_LEFT << 8) | K_3},
+     {K_SHIFT_LEFT, K_7, K_8, (K_SHIFT_LEFT << 8) | K_2, K_5, K_4, K_2},
+     {K_6, K_9, (K_SHIFT_LEFT << 8) | K_BACK_SLASH, K_SHIFT_RIGHT, (K_SHIFT_LEFT << 8) | K_9 /*(*/, K_BACK_SLASH, K_3},
+     {K_SEMICOLON, K_COMMA, (K_SHIFT_LEFT << 8) | K_1 /*!*/, (K_SHIFT_LEFT << 8) | K_SLASH /*|*/,
+      (K_SHIFT_LEFT << 8) | K_0 /*)*/, (K_SHIFT_LEFT << 8) | K_SEMICOLON /*:*/, (K_SHIFT_LEFT << 8) | K_MINUS /*-*/},
+     {K_SLASH, K_PERIOD, K_BACK_QUOTE, K_BACKSPACE, K_MINUS, (K_SHIFT_LEFT << 8) | K_QUOTE /*"*/,
+      (K_SHIFT_LEFT << 8) | K_EQUAL /*+*/},
    }}};
 
 uint8_t g_usb_report_buf[HID_REPORT_SIZE];
@@ -98,7 +106,9 @@ gpio_state_struct g_gpio_state_list[] = {
 // GPIO_LIST rows[] = {KEY_ROW_1, KEY_ROW_2, KEY_ROW_3, KEY_ROW_4, KEY_ROW_5, KEY_ROW_6, KEY_ROW_7};
 // GPIO_LIST columns[] = {KEY_COL_1, KEY_COL_2, KEY_COL_3, KEY_COL_4, KEY_COL_5};
 
-static uint32_t g_fn_mask[COLUMN_SIZE] = {0};
+static uint32_t g_fn_mask[COLUMN_SIZE] = {
+  1 << 4, 0, 0, 0, 0,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 int my_test (int a, int b);
@@ -339,55 +349,34 @@ void keyboard_generate_report (void)
         if (0 != (g_key_buf[i] & (1 << j)))    // key pressed
         {
           uint16_t report = g_key_lut[0][layer][i][j];
+          printf ("layer = %d, report = 0x%X", layer, report);
 
           // fn key is pressed
-          if (0 != (report & 0x200))    // all fn keys are defined by 0x200 + index
+          if (0 != (report & 0xff00))    // higher byte not empty
           {
-            ;
-          }
-          // modifier key pressed
-          else if (0 != (report & 0x100))    // all modifiers are defined with 0x100 + Usage ID
-          {
-            // please note time consuming here
-            switch (report)
+            uint16_t temp  = report >> 8;
+            uint16_t temp1 = (report >> 8) & 0xf8;
+            uint16_t temp2 = (0xe0 == ((report >> 8) & 0xf8));
+            if (0xe0 == ((report >> 8) & 0xf8))
             {
-            case K_CTRL_LEFT:
-              g_usb_report_buf[0] |= 1 << 0;
-              break;    // ctrl_left
-            case K_SHIFT_LEFT:
-              g_usb_report_buf[0] |= 1 << 1;
-              break;    // shift_left
-            case K_ALT_LEFT:
-              g_usb_report_buf[0] |= 1 << 2;
-              break;    // alt_left
-            case K_SUPER_LEFT:
-              g_usb_report_buf[0] |= 1 << 3;
-              break;    // super_left
-            case K_CTRL_RIGHT:
-              g_usb_report_buf[0] |= 1 << 4;
-              break;    // ctrl_right
-            case K_SHIFT_RIGHT:
-              g_usb_report_buf[0] |= 1 << 5;
-              break;    // shift_right
-            case K_ALT_RIGHT:
-              g_usb_report_buf[0] |= 1 << 6;
-              break;    // alt_right
-            case K_SUPER_RIGHT:
-              g_usb_report_buf[0] |= 1 << 7;
-              break;    // super_right
-            default:
-              break;
+              g_usb_report_buf[0] |= 1 << ((report >> 8) & 0x07);
             }
           }
-          else
+          // filter out all modifiers keys 0xe0 ~ 0xe7
+          //                      0b11111000
+          else if (0xe0 == (report & 0xf8))
           {
-            for (int k = 2; k < HID_REPORT_SIZE; k++)
+            g_usb_report_buf[0] |= 1 << (report & 0x07);
+          }
+
+          for (int k = 2; k < HID_REPORT_SIZE; k++)
+          {
+            if (0 == g_usb_report_buf[k])    // no data in this byte
             {
-              if (0 == g_usb_report_buf[k])    // no data in this byte
-              {
-                g_usb_report_buf[k] = g_key_lut[0][layer][i][j] % 256;
-                break;
-              }
+
+              g_usb_report_buf[k] = g_key_lut[0][layer][i][j] % 256;
+              printf ("layer = %d, report = 0x%X", layer, g_key_lut[0][layer][i][j]);
+              break;
             }
           }
         }
@@ -426,7 +415,12 @@ uint32_t keyboard_is_fn_pressed (void)
 {
   for (int i = 0; i < KEYBOARD_COLUMN_NUMBER; i++)
   {
-    if (0 != (g_key_buf[i] & g_fn_mask[i]))
+    uint32_t a  = g_key_buf[i];
+    uint32_t b  = g_fn_mask[i];
+    bool result = a & b;
+    // result = (0 != a&b);
+    if (result)
+    // if (0 != (g_key_buf[i] & g_fn_mask[i]))
     {
       return 1;    // pressed
     }
