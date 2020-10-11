@@ -28,24 +28,29 @@
 // { {{{}}}, };
 
 uint16_t g_key_lut[1][2][KEYBOARD_COLUMN_NUMBER][KEYBOARD_ROW_NUMBER] = {
-  // config 0 ******************** QWERT 0  ********************
   // required keys: SysReq, super, tab, F1~F12, up, down, left, right, Page Up, Page Down, Home, End
   {{
-     // SYN and $ are wrong
+     //    Q    .    W    .    E    .    R    .    T    .    Y    .    U    .    I    .    O    .    P    .
+     //    A    .    S    .    D    .    F    .    G    .    h    .    J    .    K    .    L    .   <-    .
+     //   alt   .    z    .    x    .    c    .    v    .    b    .    n    .    m    .    .    .  enter  .
+     //         .  shift  .    ~    .  space  .   syn   .  ctrl   .
      {K_TILDE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
      {K_SHIFT_LEFT, K_Z, K_X, K_P, K_D, K_S, K_E},
-     {K_F, K_C, K_V, K_SHIFT_RIGHT, K_T, K_G, K_R},
+     {K_F, K_C, K_V, K_CTRL_RIGHT, K_T, K_G, K_R},
      {K_J, K_N, K_B, K_ENTER, K_Y, K_H, K_U},
-     {K_K, K_M, K_DOLLAR, K_BACKSPACE, K_I, K_L, K_O},
+     {K_K, K_M, K_PERIOD, K_BACKSPACE, K_I, K_L, K_O},
    },
 
-   // Config 2 QWERT normal *************************************************
    {
+     //    #    .    1    .    2    .    3    .    (    .    )    .    _    .    -    .    +    .    P    .
+     //    *    .    4    .    5    .    6    .    /    .    :    .    ;    .    '    .    "    .   <-    .
+     //   alt   .    7    .    8    .    9    .    ?    .    !    .    ,    `    .    .    $    .    |    .
+     //         .  shift  .    0    .  space  .   syn   .  ctrl   .
      {K_0, K_TAB, K_ALT_LEFT, K_ASTERISK, K_FN_RIGHT, K_1, K_HASH},
      {K_SHIFT_LEFT, K_7, K_8, K_AT, K_5, K_4, K_2},
-     {K_6, K_9, K_QUESTION, K_SHIFT_RIGHT, K_PAREN, K_SLASH, K_3},
+     {K_6, K_9, K_QUESTION, K_CTRL_RIGHT, K_PAREN, K_SLASH, K_3},
      {K_SEMICOLON, K_COMMA, K_EXCLAM, K_VERTICAL, K_BACK_PAREN, K_COLON, K_UNDERSCORE},
-     {K_QUOTE, K_PERIOD, K_BACK_QUOTE, K_BACKSPACE, K_MINUS, K_DOUBLEQUOTE, K_PLUS},
+     {K_QUOTE, K_BACK_QUOTE, K_DOLLAR, K_ESC, K_MINUS, K_DOUBLEQUOTE, K_PLUS},
    }}};
 
 uint8_t g_usb_report_buf[HID_REPORT_SIZE];
