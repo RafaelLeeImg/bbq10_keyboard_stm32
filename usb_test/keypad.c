@@ -27,26 +27,49 @@
 
 // { {{{}}}, };
 
-uint16_t g_key_lut[1][2][KEYBOARD_ROW_NUMBER][KEYBOARD_COLUMN_NUMBER] = {
+// uint16_t g_key_lut_tmp[1][2][KEYBOARD_ROW_NUMBER][KEYBOARD_COLUMN_NUMBER] = {
+//   // config 0 ******************** QWERT 0  ********************
+//   {{{K_Q, K_E, K_R, K_U, K_O},
+//     {K_W, K_S, K_G, K_H, K_L},
+//     {K_FN_LEFT, K_D, K_T, K_Y, K_I},
+//     {K_A, K_P, K_SHIFT_RIGHT, K_ENTER, K_BACKSPACE},
+//     {K_ALT_LEFT, K_X, K_V, K_B, K_PRTSC},
+//     {K_SPACE, K_Z, K_C, K_N, K_M},
+//     {K_BACK_QUOTE, K_SHIFT_LEFT, K_F, K_J, K_K}},
+
+//    // Config 2 QWERT normal *************************************************
+//    {{K_Q, K_E, K_R, K_U, K_O},
+//     {K_W, K_S, K_G, K_H, K_L},
+//     {K_FN_LEFT, K_D, K_T, K_Y, K_I},
+//     {K_A, K_P, K_SHIFT_RIGHT, K_ENTER, K_BACKSPACE},
+//     {K_ALT_LEFT, K_X, K_V, K_B, K_PRTSC},
+//     {K_SPACE, K_Z, K_C, K_N, K_M},
+//     {K_BACK_QUOTE, K_SHIFT_LEFT, K_F, K_J, K_K}}}};
+
+uint16_t g_key_lut[1][2][KEYBOARD_COLUMN_NUMBER][KEYBOARD_ROW_NUMBER] = {
   // config 0 ******************** QWERT 0  ********************
-  {{{K_Q, K_E, K_R, K_U, K_O},
-    {K_W, K_S, K_G, K_H, K_L},
-    {K_FN_LEFT, K_D, K_T, K_Y, K_I},
-    {K_A, K_P, K_SHIFT_RIGHT, K_ENTER, K_BACKSPACE},
-    {K_ALT_LEFT, K_X, K_V, K_B, K_PRTSC},
-    {K_BACK_QUOTE, K_SHIFT_LEFT, K_F, K_J, K_K}},
+  {{
+     // SYN and $ are wrong
+     {K_BACK_QUOTE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
+     {K_SHIFT_LEFT, K_Z, K_X, K_P, K_D, K_S, K_E},
+     {K_F, K_C, K_V, K_SHIFT_RIGHT, K_T, K_G, K_R},
+     {K_J, K_N, K_B, K_ENTER, K_Y, K_H, K_U},
+     {K_K, K_M, K_BACK_QUOTE, K_BACKSPACE, K_I, K_L, K_O},
+   },
 
    // Config 2 QWERT normal *************************************************
-   {{K_Q, K_E, K_R, K_U, K_O},
-    {K_W, K_S, K_G, K_H, K_L},
-    {K_FN_LEFT, K_D, K_T, K_Y, K_I},
-    {K_A, K_P, K_SHIFT_RIGHT, K_ENTER, K_BACKSPACE},
-    {K_ALT_LEFT, K_X, K_V, K_B, K_PRTSC},
-    {K_BACK_QUOTE, K_SHIFT_LEFT, K_F, K_J, K_K}}}};
+   {
+     {K_BACK_QUOTE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
+     {K_SHIFT_LEFT, K_Z, K_X, K_P, K_D, K_S, K_E},
+     {K_F, K_C, K_V, K_SHIFT_RIGHT, K_T, K_G, K_R},
+     {K_J, K_N, K_B, K_ENTER, K_Y, K_H, K_U},
+     {K_K, K_M, K_BACK_QUOTE, K_BACKSPACE, K_I, K_L, K_O},
+   }}};
 
 uint8_t g_usb_report_buf[HID_REPORT_SIZE];
 uint8_t g_usb_report_buf_previous[HID_REPORT_SIZE];
-uint32_t g_key_buf[KEYBOARD_COLUMN_NUMBER] = {0};
+// uint32_t g_key_buf[KEYBOARD_COLUMN_NUMBER] = {0};
+extern uint32_t g_key_buf[];
 // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 // TODO:rename to gpio_table
 gpio_state_struct g_gpio_state_list[] = {
@@ -309,9 +332,9 @@ void keyboard_generate_report (void)
     // Ctrl or Alt or Shift pressed
     // side effect, read global variable
     // all normal keys
-    for (int i = 0; i < KEYBOARD_ROW_NUMBER; i++)
+    for (int i = 0; i < KEYBOARD_COLUMN_NUMBER; i++)
     {
-      for (int j = 0; j < KEYBOARD_COLUMN_NUMBER; j++)
+      for (int j = 0; j < KEYBOARD_ROW_NUMBER; j++)
       {
         if (0 != (g_key_buf[i] & (1 << j)))    // key pressed
         {
@@ -401,7 +424,7 @@ void keyboard_generate_report (void)
 
 uint32_t keyboard_is_fn_pressed (void)
 {
-  for (int i = 0; i < KEYBOARD_ROW_NUMBER; i++)
+  for (int i = 0; i < KEYBOARD_COLUMN_NUMBER; i++)
   {
     if (0 != (g_key_buf[i] & g_fn_mask[i]))
     {
@@ -429,7 +452,7 @@ int32_t keyboard_pressed_key_count (void)
   const uint32_t B[] = {0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF};
 
   cnt = 0;
-  for (int i = 0; i < KEYBOARD_ROW_NUMBER; i++)
+  for (int i = 0; i < KEYBOARD_COLUMN_NUMBER; i++)
   {
     v = g_key_buf[i];
     c = v - ((v >> 1) & B[0]);

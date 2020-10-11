@@ -25,6 +25,7 @@ unsigned int g_tim_state;
 extern gpio_state_struct g_gpio_state_list[];
 extern usbd_device* usbd_dev;
 extern uint8_t g_usb_report_buf[HID_REPORT_SIZE];
+extern bool g_usb_initialized;
 
 /* Private function prototypes -----------------------------------------------*/
 void tim2_isr_callback (void);
@@ -65,7 +66,7 @@ void tim2_interrupt_setup (void)
   TIM_CNT (TIM2) = 1;
 
   /* Set timer prescaler. 72MHz/7200 => 10,000 counts per second. */
-  TIM_PSC (TIM2) = 7200;
+  TIM_PSC (TIM2) = 72;
 
   /* End timer value. If this is reached an interrupt is generated. */
   TIM_ARR (TIM2) = 1000;
@@ -83,7 +84,7 @@ void tim2_isr (void)
   tim2_isr_callback();
 }
 
-static uint32_t g_key_buf[COLUMN_SIZE] = {0};
+uint32_t g_key_buf[COLUMN_SIZE] = {0};
 void tim2_isr_callback (void)
 {
 
@@ -113,8 +114,11 @@ void tim2_isr_callback (void)
   }
   else if (g_tim_state == 2 * COLUMN_SIZE + 1)
   {
-    while (usbd_ep_write_packet (usbd_dev, 0x81, g_usb_report_buf, sizeof (g_usb_report_buf) / sizeof (uint8_t)) == 0)
-      ;
+    if (g_usb_initialized)
+    {
+      while (usbd_ep_write_packet (usbd_dev, 0x81, g_usb_report_buf, sizeof (g_usb_report_buf) / sizeof (uint8_t)) == 0)
+        ;
+    }
   }
   g_tim_state++;
   if (g_tim_state > 2 * COLUMN_SIZE + 2)

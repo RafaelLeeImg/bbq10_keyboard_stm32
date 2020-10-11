@@ -241,19 +241,13 @@ void sys_tick_handler (void)
   if (x == 400)
   {
     buf[2] = 0x11;    // key n
-    while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf) / sizeof (uint8_t)) == 0)
-    {
-      ;
-    }
+    // while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf) / sizeof (uint8_t)) == 0) { ; }
   }
   else if (x >= 500)
   {
     bsp_gpio_toggle (g_gpio_state_list, LED0);
     buf[2] = 0;
-    while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf) / sizeof (uint8_t)) == 0)
-    {
-      ;
-    }
+    // while (usbd_ep_write_packet (usbd_dev, 0x81, buf, sizeof (buf) / sizeof (uint8_t)) == 0) { ; }
     x = 0;
   }
   else

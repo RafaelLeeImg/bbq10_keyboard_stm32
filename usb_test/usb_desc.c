@@ -14,15 +14,11 @@
 // #include <libopencm3/usb/audio.h>
 // #include <libopencm3/usb/midi.h>
 #include <libopencm3/cm3/systick.h>
+#include <libopencm3/stm32/timer.h>
 #include <libopencm3/usb/hid.h>
 
 #include <stdint.h>
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-
-/* Private variables ---------------------------------------------------------*/
 /* Define this to include the DFU APP interface. */
 // #define INCLUDE_DFU_INTERFACE
 
@@ -30,6 +26,8 @@
 #include <libopencm3/cm3/scb.h>
 #include <libopencm3/usb/dfu.h>
 #endif
+
+/* Private typedef -----------------------------------------------------------*/
 
 usbd_device* usbd_dev;
 
@@ -161,6 +159,13 @@ const struct usb_config_descriptor config = {
   .interface = ifaces,
 };
 
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
+
+bool g_usb_initialized = false;
+
 const char* usb_strings[] = {
   "SZDIY",
   "BlackBerry Q10 Keyboard",
@@ -239,6 +244,8 @@ void hid_set_config (usbd_device* dev, uint16_t wValue)
   systick_set_frequency (1000, 72000000);
   systick_interrupt_enable();
   systick_counter_enable();
+
+  g_usb_initialized = true;
 }
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/

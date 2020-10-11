@@ -20,6 +20,7 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+// bool g_usb_initialized;
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void usbmidi_set_config (usbd_device* usbd_dev, uint16_t wValue);
