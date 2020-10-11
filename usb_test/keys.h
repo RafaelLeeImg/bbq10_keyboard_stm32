@@ -56,7 +56,7 @@
 // --------------------
 #define K_BRACKET_LEFT  (0x2F)
 #define K_BRACKET_RIGHT (0X30)    // name longest 15 characters
-#define K_BACK_SLASH    (0x31)
+#define K_BACK_SLASH    (0x31)    // "\"
 #define K_BACKSPACE     (0x2A)
 // --------------------
 #define K_PAUSE_BREAK (0x48)
@@ -122,7 +122,7 @@
 // --------------------
 #define K_COMMA     (0x36)
 #define K_PERIOD    (0x37)
-#define K_SLASH     (0x38)
+#define K_SLASH     (0x38)    // /
 #define K_PAGE_UP   (0x4B)
 #define K_UP        (0x52)
 #define K_DOWN      (0x51)
@@ -150,6 +150,21 @@
 #define K_SHIFT_RIGHT (0XE5)
 #define K_ALT_RIGHT   (0xE6)
 #define K_SUPER_RIGHT (0xE7)
+// --------------------
+#define K_ASTERISK    ((K_SHIFT_LEFT << 8) | K_8)          /* * */
+#define K_HASH        ((K_SHIFT_LEFT << 8) | K_3)          /*#*/
+#define K_AT          ((K_SHIFT_LEFT << 8) | K_2)          /*@*/
+#define K_QUESTION    ((K_SHIFT_LEFT << 8) | K_SLASH)      /*?*/
+#define K_PAREN       ((K_SHIFT_LEFT << 8) | K_9)          /*(*/
+#define K_EXCLAM      ((K_SHIFT_LEFT << 8) | K_1)          /* ! exclamation mark*/
+#define K_BACK_PAREN  ((K_SHIFT_LEFT << 8) | K_0)          /*)*/
+#define K_COLON       ((K_SHIFT_LEFT << 8) | K_SEMICOLON)  /*:*/
+#define K_UNDERSCORE  ((K_SHIFT_LEFT << 8) | K_MINUS)      /*_*/
+#define K_DOUBLEQUOTE ((K_SHIFT_LEFT << 8) | K_QUOTE)      /*"*/
+#define K_PLUS        ((K_SHIFT_LEFT << 8) | K_EQUAL)      /*+*/
+#define K_DOLLAR      ((K_SHIFT_LEFT << 8) | K_4)          /*$*/
+#define K_TILDE       ((K_SHIFT_LEFT << 8) | K_BACK_QUOTE) /*~*/
+#define K_VERTICAL    ((K_SHIFT_LEFT << 8) | K_BACK_SLASH) /* | vertical bar*/
 
 #endif /* __KEYS_H__ */
 

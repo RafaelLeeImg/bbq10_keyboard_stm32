@@ -65,7 +65,7 @@ void tim2_interrupt_setup (void)
   /* Set timer start value. */
   TIM_CNT (TIM2) = 1;
 
-  /* Set timer prescaler. 72MHz/7200 => 10,000 counts per second. */
+  /* Set timer prescaler. 72MHz/72 => 1000,000 counts per second. */
   TIM_PSC (TIM2) = 72;
 
   /* End timer value. If this is reached an interrupt is generated. */
