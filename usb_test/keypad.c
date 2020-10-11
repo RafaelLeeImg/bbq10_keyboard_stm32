@@ -29,6 +29,7 @@
 
 uint16_t g_key_lut[1][2][KEYBOARD_COLUMN_NUMBER][KEYBOARD_ROW_NUMBER] = {
   // config 0 ******************** QWERT 0  ********************
+  // required keys: SysReq, super, tab, F1~F12, up, down, left, right, Page Up, Page Down, Home, End
   {{
      // SYN and $ are wrong
      {K_TILDE, K_SPACE, K_ALT_LEFT, K_A, K_FN_RIGHT, K_W, K_Q},
