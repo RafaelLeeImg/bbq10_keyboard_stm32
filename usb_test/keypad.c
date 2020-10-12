@@ -10,6 +10,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "keypad.h"
+#include <string.h>
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private define ------------------------------------------------------------*/
@@ -434,8 +435,7 @@ int32_t keyboard_pressed_key_count (void)
 
 bool usb_report_changed (void)
 {
-  bool changed = (0 != strncmp (g_usb_report_buf, g_usb_report_buf, HID_REPORT_SIZE));
-  return changed;
+  return (0 != memcmp (g_usb_report_buf, g_usb_report_buf_previous, HID_REPORT_SIZE));
 }
 
 /************************ (C) COPYRIGHT ************************END OF FILE****/

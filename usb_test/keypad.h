@@ -76,6 +76,7 @@ bool bsp_gpio_pin_read (gpio_state_struct l[], GPIO_LIST g);
 
 bool read_key (gpio_state_struct l[], GPIO_LIST columns[], int column_size, GPIO_LIST rows[], int row_size, int index);
 void keys_drive_line (gpio_state_struct l[], GPIO_LIST gpios[], int size_of_gpios, int index);
+bool usb_report_changed (void);
 
 #endif /* __KEYPAD_H__ */
 
