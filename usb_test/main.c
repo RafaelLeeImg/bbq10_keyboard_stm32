@@ -118,7 +118,6 @@ int main (void)
   // // rcc_periph_clock_enable(RCC_OTGFS);
   // rcc_periph_clock_enable(RCC_USB);
   rcc_periph_clock_enable (RCC_USART1);
-  tim2_interrupt_setup();
 
   // to set PA15 free from debug port
   // avoid PA15 in next version
@@ -147,6 +146,7 @@ int main (void)
   // // USB D- pull-up to 3.3V with 1.5k resistor for full speed device
   // // USB D+ pull-up to 3.3V with 1.5k resistor for high speed device
   usart_setup();
+  tim2_interrupt_setup();    // should after usart_setup, since tim2_isr uses usart
 
   gpio_clear (LED0_PORT, LED0_PIN);
   gpio_toggle (LED0_PORT, LED0_PIN);
