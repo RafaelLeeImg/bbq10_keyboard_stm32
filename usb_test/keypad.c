@@ -328,14 +328,9 @@ void keyboard_generate_report (void)
         if (0 != (g_key_buf[i] & (1 << j)))    // key pressed
         {
           uint16_t report = g_key_lut[0][layer][i][j];
-          printf ("layer = %d, report = 0x%X\n", layer, report);
-
           // fn key is pressed
           if (0 != (report & 0xff00))    // higher byte not empty
           {
-            uint16_t temp  = report >> 8;
-            uint16_t temp1 = (report >> 8) & 0xf8;
-            uint16_t temp2 = (0xe0 == ((report >> 8) & 0xf8));
             if (0xe0 == ((report >> 8) & 0xf8))
             {
               g_usb_report_buf[0] |= 1 << ((report >> 8) & 0x07);
@@ -354,7 +349,6 @@ void keyboard_generate_report (void)
             {
 
               g_usb_report_buf[k] = g_key_lut[0][layer][i][j] % 256;
-              printf ("layer = %d, report = 0x%X\n", layer, g_key_lut[0][layer][i][j]);
               break;
             }
           }
