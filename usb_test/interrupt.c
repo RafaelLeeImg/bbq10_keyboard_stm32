@@ -114,7 +114,8 @@ void tim2_isr_callback (void)
   }
   else if (g_tim_state == 2 * COLUMN_SIZE + 1)
   {
-    if (g_usb_initialized)
+    bool changed = usb_report_changed();
+    if (g_usb_initialized && changed)
     {
       while (usbd_ep_write_packet (usbd_dev, 0x81, g_usb_report_buf, sizeof (g_usb_report_buf) / sizeof (uint8_t)) == 0)
         ;

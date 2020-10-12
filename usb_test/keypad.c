@@ -438,4 +438,10 @@ int32_t keyboard_pressed_key_count (void)
   return cnt;
 }
 
+bool usb_report_changed (void)
+{
+  bool changed = (0 != strncmp (g_usb_report_buf, g_usb_report_buf, HID_REPORT_SIZE));
+  return changed;
+}
+
 /************************ (C) COPYRIGHT ************************END OF FILE****/
