@@ -177,6 +177,7 @@ uint8_t usbd_control_buffer[128];
 
 /* Private function prototypes -----------------------------------------------*/
 void hid_set_config (usbd_device* dev, uint16_t wValue);
+void usb_reset_callback (void);
 /* Private functions ---------------------------------------------------------*/
 static enum usbd_request_return_codes hid_control_request (usbd_device* dev, struct usb_setup_data* req, uint8_t** buf,
                                                            uint16_t* len,
@@ -223,6 +224,11 @@ static enum usbd_request_return_codes dfu_control_request (usbd_device* dev, str
 }
 #endif
 
+void usb_reset_callback (void)
+{
+  g_usb_initialized = false;
+}
+
 // run after USB attached
 void hid_set_config (usbd_device* dev, uint16_t wValue)
 {
@@ -233,6 +239,9 @@ void hid_set_config (usbd_device* dev, uint16_t wValue)
 
   usbd_register_control_callback (dev, USB_REQ_TYPE_STANDARD | USB_REQ_TYPE_INTERFACE,
                                   USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT, hid_control_request);
+
+  usbd_register_reset_callback (dev, usb_reset_callback);
+
 #ifdef INCLUDE_DFU_INTERFACE
   usbd_register_control_callback (dev, USB_REQ_TYPE_CLASS | USB_REQ_TYPE_INTERFACE,
                                   USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT, dfu_control_request);
